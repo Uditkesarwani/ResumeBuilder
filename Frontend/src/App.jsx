@@ -59,12 +59,21 @@ function App() {
 
   const [resumeCount, setResumeCount] = useState(0);
 
-  useEffect(() => {
-    fetch("https://resumebuilder-backend-10tg.onrender.com/api/user/Resumecount")
-      .then((res) => res.json())
-      .then((data) => setResumeCount(data.count))
-      .catch((err) => console.error(err));
-  }, []);
+ useEffect(() => {
+  const fetchResumeCount = async () => {
+    try {
+      const res = await fetch("https://resumebuilder-backend-10tg.onrender.com/api/user/Resumecount");
+      const data = await res.json();
+      console.log("Resume count response:", data);
+      setResumeCount(data.count);
+    } catch (err) {
+      console.error("Failed to fetch resume count:", err);
+    }
+  };
+
+  fetchResumeCount();
+}, []);
+
 
   const handlePrintResume = async () => {
     try {
