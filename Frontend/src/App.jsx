@@ -1,191 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import "./App.css";
-// import NameDetail from "./NameDetail";
-// import WorkExperience from "./WorkExperience";
-// import EducationDetail from "./EducationDetail";
-// import ProjectDetail from "./ProjectDetail";
-// import Skill from "./Skill";
-// import ResumeSetting from "./ResumeSetting";
-// import ResumePreview from "./ResumePreview";
-// import Feedback from "./Feedback";
-// import { useNavigate } from "react-router-dom";
-
-// function App() {
-//   const navigate = useNavigate();
-
-//   // State for user personal details
-//   const [personal, setPersonal] = useState({
-//     name: "",
-//     objective: "",
-//     email: "",
-//     phone: "",
-//     website: "",
-//     location: "",
-//   });
-
-//   const [workExperience, setWorkExperience] = useState({
-//     company: "",
-//     jobTitle: "",
-//     jobDate: "",
-//     jobDesc: "",
-//   });
-
-//   const [educationList, setEducationList] = useState([
-//     { institute: "", degree: "", year: "", description: "" },
-//   ]);
-
-//   const [project, setProject] = useState([
-//     {
-//       projectName: "",
-//       techStack: "",
-//       projectDate: "",
-//       projectDesc: "",
-//     },
-//   ]);
-
-//   const [skill, setSkill] = useState({
-//     skillList: "",
-//   });
-
-//   const [setting, setSetting] = useState({
-//     themeColor: "#2563eb",
-//     fontFamily: "sans-serif",
-//     fontSize: "text-base",
-//   });
-
-//   // ✅ Resume Count State
-//   const [resumeCount, setResumeCount] = useState(0);
-
-//   // ✅ useEffect to fetch resume count (dummy/static for now)
-//   useEffect(() => {
-//     // 🔄 Either fetch from backend or use static count
-//     fetch("http://localhost:5000/api/user/Resumecount")
-//       .then((res) => res.json())
-//       .then((data) => setResumeCount(data.count))
-//       .catch((err) => console.error(err));
-
-    
-//   }, []);
-
-
-//   const handlePrintResume = async () => {
-//   try {
-//     // First call: update backend
-//     await fetch("http://localhost:5000/api/user/printResume", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
-
-//     // Second call: resume count fetch (same as useEffect logic)
-//     fetch("http://localhost:5000/api/user/Resumecount")
-//       .then((res) => res.json())
-//       .then((data) => setResumeCount(data.count))
-//       .catch((err) => console.error(err));
-
-//     // Trigger print
-//     window.print();
-//   } catch (error) {
-//     console.error("❌ Failed to update resume count:", error);
-//     window.print(); // fallback print
-//   }
-// };
-
-
-
-
-//   return (
-//     <div className="min-h-screen bg-gray-100 p-6 md:p-10">
-//       {/* 🔘 Resume Count + Feedback Button */}
-//       <div className="flex justify-start items-center gap-4 mb-4 print:hidden">
-//         <div className="bg-white text-black px-4 py-2 rounded-md shadow border border-gray-300">
-//           Total Users Created Resume:{" "}
-//           <span className="font-bold text-blue-600">{resumeCount}</span>
-//         </div>
-//         <button
-//           onClick={() => navigate("/feedback")}
-//           className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition"
-//         >
-//           View Feedbacks
-//         </button>
-//       </div>
-
-//       <div className="flex flex-col lg:flex-row gap-6">
-//         {/* Left: Form Section */}
-//         <div className="w-full lg:w-1/2 max-h-screen overflow-y-auto pr-2 print:hidden">
-//           <NameDetail data={personal} setData={setPersonal} />
-//           <WorkExperience data={workExperience} setData={setWorkExperience} />
-//           <EducationDetail
-//             data={educationList}
-//             onChange={setEducationList}
-//             onAdd={() =>
-//               setEducationList([
-//                 ...educationList,
-//                 {
-//                   institute: "",
-//                   degree: "",
-//                   year: "",
-//                   description: "",
-//                 },
-//               ])
-//             }
-//           />
-//           <ProjectDetail
-//             data={project}
-//             onChange={setProject}
-//             onAdd={() =>
-//               setProject([
-//                 ...project,
-//                 {
-//                   projectName: "",
-//                   techStack: "",
-//                   projectDate: "",
-//                   projectDesc: "",
-//                 },
-//               ])
-//             }
-//           />
-//           <Skill data={skill} setData={setSkill} />
-//           <ResumeSetting setting={setting} setSetting={setSetting} />
-
-//           {/* Feedback Form */}
-//           <Feedback />
-
-//           <div className="flex justify-end sticky bottom-0 bg-gray-100 py-14">
-//             <button
-//               className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-all duration-200"
-//               onClick={handlePrintResume}
-//             >
-//               Print Resume
-//             </button>
-//           </div>
-//         </div>
-
-//         {/* Right: Resume Preview */}
-//         <div className="w-full lg:w-1/2 h-screen sticky top-0 overflow-hidden">
-//           <ResumePreview
-//             name={personal.name}
-//             objective={personal.objective}
-//             email={personal.email}
-//             phone={personal.phone}
-//             website={personal.website}
-//             location={personal.location}
-//             themeColor={setting.themeColor}
-//             fontFamily={setting.fontFamily}
-//             fontSize={setting.fontSize}
-//             work={workExperience}
-//             educationList={educationList}
-//             project={project}
-//             skill={skill}
-//           />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default App;
 
 
 import React, { useState, useEffect, useRef } from "react";
@@ -248,7 +60,7 @@ function App() {
   const [resumeCount, setResumeCount] = useState(0);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/user/Resumecount")
+    fetch("https://resumebuilder-backend-10tg.onrender.com/api/user/Resumecount")
       .then((res) => res.json())
       .then((data) => setResumeCount(data.count))
       .catch((err) => console.error(err));
@@ -256,12 +68,12 @@ function App() {
 
   const handlePrintResume = async () => {
     try {
-      await fetch("http://localhost:5000/api/user/printResume", {
+      await fetch("https://resumebuilder-backend-10tg.onrender.com/api/user/printResume", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
 
-      fetch("http://localhost:5000/api/user/Resumecount")
+      fetchhttps://resumebuilder-backend-10tg.onrender.com/api/user/Resumecount")
         .then((res) => res.json())
         .then((data) => setResumeCount(data.count))
         .catch((err) => console.error(err));
@@ -275,12 +87,12 @@ function App() {
 
   const handleDownloadPDF = async () => {
     try {
-      await fetch("http://localhost:5000/api/user/printResume", {
+      await fetch("https://resumebuilder-backend-10tg.onrender.com/api/user/printResume", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
 
-      fetch("http://localhost:5000/api/user/Resumecount")
+      fetch("https://resumebuilder-backend-10tg.onrender.com/api/user/Resumecount")
         .then((res) => res.json())
         .then((data) => setResumeCount(data.count))
         .catch((err) => console.error(err));
