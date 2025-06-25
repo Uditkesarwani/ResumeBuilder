@@ -9,7 +9,7 @@ const ViewFeedbacks = () => {
 
   useEffect(() => {
     // Fetch feedbacks from backend API
-    fetch("http://localhost:5000/api/user/getFeedback")
+    fetch("https://resumebuilder-backend-10tg.onrender.com/api/user/getFeedback")
       .then((res) => res.json())
       .then((data) => {
         setFeedbacks(data);
