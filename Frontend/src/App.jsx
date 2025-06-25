@@ -82,7 +82,7 @@ function App() {
         headers: { "Content-Type": "application/json" },
       });
 
-      fetchhttps://resumebuilder-backend-10tg.onrender.com/api/user/Resumecount")
+      fetch("https://resumebuilder-backend-10tg.onrender.com/api/user/Resumecount");
         .then((res) => res.json())
         .then((data) => setResumeCount(data.count))
         .catch((err) => console.error(err));
