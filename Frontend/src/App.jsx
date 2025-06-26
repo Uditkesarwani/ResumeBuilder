@@ -75,63 +75,92 @@ function App() {
 }, []);
 
 
-  const handlePrintResume = async () => {
-    try {
-      await fetch("https://resumebuilder-backend-10tg.onrender.com/api/user/printResume", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-
-    fetch("https://resumebuilder-backend-10tg.onrender.com/api/user/Resumecount")
-  .then((res) => res.json())
-  .then((data) => setResumeCount(data.count))
-  .catch((err) => console.error(err));
-
-
-      window.print();
-    } catch (error) {
-      console.error("❌ Failed to update resume count:", error);
-      window.print();
-    }
-  };
 
   
 
-const handleDownloadPDF = () => {
+const handleDownloadPDF = async () => {
   const resume = document.querySelector(".resume-preview");
   if (!resume) return;
 
-  html2canvas(resume, {
-    scale: 2,
-    useCORS: true,
-  }).then((canvas) => {
-    const imgData = canvas.toDataURL("image/png");
+  try {
+    // First: Call the printResume API (server-side saving/logging)
+    await fetch("https://resumebuilder-backend-10tg.onrender.com/api/user/printResume", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
 
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
+    // Optional: Update count on frontend (if you're displaying it)
+    fetch("https://resumebuilder-backend-10tg.onrender.com/api/user/Resumecount")
+      .then((res) => res.json())
+      .then((data) => setResumeCount(data.count))
+      .catch((err) => console.error(err));
 
-    const imgWidth = pdfWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    // Then: Proceed with downloading the PDF
+    html2canvas(resume, {
+      scale: 2,
+      useCORS: true,
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
 
-    let heightLeft = imgHeight;
-    let position = 0;
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
 
-    // Add first page
-    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-    heightLeft -= pdfHeight;
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    // Loop to add remaining pages
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
+      let heightLeft = imgHeight;
+      let position = 0;
+
       pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
       heightLeft -= pdfHeight;
-    }
 
-    pdf.save("resume.pdf");
-  });
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pdfHeight;
+      }
+
+      pdf.save("resume.pdf");
+    });
+
+  } catch (error) {
+    console.error("❌ Error saving resume before download:", error);
+    alert("Failed to save resume data. Downloading anyway...");
+
+    // Still download PDF even if fetch fails
+    html2canvas(resume, {
+      scale: 2,
+      useCORS: true,
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pdfHeight;
+      }
+
+      pdf.save("resume.pdf");
+    });
+  }
 };
+
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-10">
