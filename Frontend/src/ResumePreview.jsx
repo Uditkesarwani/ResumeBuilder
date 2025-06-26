@@ -29,11 +29,11 @@ const ResumePreview = ({
       style={{
         fontFamily: fontFamily || "sans-serif",
         fontSize: fontSizeMap[fontSize] || "1rem",
-        borderTop: `16px solid ${themeColor}`,
+        borderTop: `30px solid ${themeColor}`,
         backgroundColor: "white",
         color: "black",
         padding: "24px",
-        lineHeight: "1.6",
+        lineHeight: "1.2",
         width: "100%",
         boxSizing: "border-box",
       }}
@@ -41,7 +41,7 @@ const ResumePreview = ({
       <div className="resume-section">
         {/* Header */}
         <div className="resume-header">
-          <h2 className="resume-name">{name || "Your Name"}</h2>
+          <h2 className="resume-name" >{name || "Your Name"}</h2>
           {objective && (
             <p className="resume-objective">{objective}</p>
           )}
