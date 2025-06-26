@@ -95,33 +95,43 @@ function App() {
     }
   };
 
-  const handleDownloadPDF = async () => {
-    try {
-      await fetch("https://resumebuilder-backend-10tg.onrender.com/api/user/printResume", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
+  
 
-      fetch("https://resumebuilder-backend-10tg.onrender.com/api/user/Resumecount")
-        .then((res) => res.json())
-        .then((data) => setResumeCount(data.count))
-        .catch((err) => console.error(err));
+const handleDownloadPDF = () => {
+  const resume = document.querySelector(".resume-preview");
+  if (!resume) return;
 
-      const input = resumeRef.current;
-      const canvas = await html2canvas(input, {
-        scale: 2,
-        useCORS: true,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save("Resume.pdf");
-    } catch (error) {
-      console.error("❌ PDF Download Failed:", error);
+  html2canvas(resume, {
+    scale: 2,
+    useCORS: true,
+  }).then((canvas) => {
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    const imgWidth = pdfWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    // Add first page
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pdfHeight;
+
+    // Loop to add remaining pages
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
     }
-  };
+
+    pdf.save("resume.pdf");
+  });
+};
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-10">
